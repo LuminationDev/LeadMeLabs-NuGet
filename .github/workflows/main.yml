@@ -1,0 +1,38 @@
+name: Build and Publish
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  DOTNET_VERSION: 6.0.100
+  NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore NuGet packages
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      - name: Pack
+        run: dotnet pack --configuration Release --output nupkgs
+
+      - name: Publish to GitHub Packages
+        run: dotnet nuget push "nupkgs/*.nupkg" --source "github"
+        env:
+          NUGET_ENDPOINT: https://nuget.pkg.github.com/LuminationDev/index.json
+          NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
