@@ -35,7 +35,7 @@ jobs:
         run: msbuild /t:Pack /p:Configuration=Release
 
       - name: Publish to GitHub Packages
-        run: dotnet nuget push "nupkgs/*.nupkg" --source "github"
+        run: dotnet nuget push "bin/Release/*.nupkg" --source "github"
         env:
           NUGET_ENDPOINT: https://nuget.pkg.github.com/LuminationDev/index.json
           NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
