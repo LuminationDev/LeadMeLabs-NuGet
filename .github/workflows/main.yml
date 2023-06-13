@@ -32,10 +32,10 @@ jobs:
         run: msbuild /p:Configuration=Release
 
       - name: Pack
-        run: msbuild /t:Pack /p:Configuration=Release
+        run: msbuild /t:Pack /p:Configuration=Release /p:PackageOutputPath=bin/NuGet
 
       - name: Publish to GitHub Packages
-        run: dotnet nuget push "bin/Release/*.nupkg" --source "${{ env.NUGET_ENDPOINT }}" --api-key "${{ env.NUGET_API_KEY }}"
+        run: dotnet nuget push "bin/NuGet/*.nupkg" --source "${{ env.NUGET_ENDPOINT }}" --api-key "${{ env.NUGET_API_KEY }}"
         env:
           NUGET_ENDPOINT: https://nuget.pkg.github.com/LuminationDev/index.json
           NUGET_API_KEY: ${{ secrets.NUGET_TOKEN }}
