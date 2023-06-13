@@ -28,11 +28,8 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore
 
-      - name: Build
-        run: msbuild /p:Configuration=Release
-
-      - name: Pack
-        run: dotnet pack --configuration Release --output nupkgs
+      - name: Build and Pack
+        run: msbuild /t:Restore;Build;Pack /p:Configuration=Release
 
       - name: Publish to GitHub Packages
         run: dotnet nuget push "nupkgs/*.nupkg" --source "github"
