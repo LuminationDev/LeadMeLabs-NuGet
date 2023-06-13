@@ -11,7 +11,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
@@ -34,5 +34,5 @@ jobs:
       - name: Publish to GitHub Packages
         run: dotnet nuget push "nupkgs/*.nupkg" --source "github"
         env:
-          NUGET_ENDPOINT: https://nuget.pkg.github.com/LuminationDev/index.json
+          NUGET_ENDPOINT: https://nuget.pkg.github.com/YOUR_GITHUB_USERNAME/index.json
           NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
