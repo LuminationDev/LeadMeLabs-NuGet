@@ -22,6 +22,11 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Install MSBuild
+        run: |
+          choco install microsoft-build-tools -y --allow-empty-checksums
+          refreshenv
+
       - name: Restore NuGet packages
         run: nuget restore
 
