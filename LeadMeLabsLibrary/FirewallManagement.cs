@@ -2,7 +2,7 @@
 using System;
 using System.Diagnostics;
 
-namespace LeadMeLabsDLL
+namespace LeadMeLabsLibrary
 {
     public static class FirewallManagement
     {

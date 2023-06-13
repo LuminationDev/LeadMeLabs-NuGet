@@ -1,0 +1,35 @@
+SETUP
+Build release like normal, nuget package will generate automatically (See Project -> Properties -> Packaging) if not.
+
+OR
+
+Build the package:
+nuget pack LeadMeLabsDLL.nuspec
+
+HOW TO PUBLISH
+Push the package:
+nuget push LeadMeLabsDll.X.X.X.nupkg -Source "https://nuget.pkg.github.com/LuminationDev/index.json" -ApiKey GITHUB_PERSONAL_ACCESS_TOKEN
+
+-> Where X.X.X is the version number
+
+
+HOW TO ACCESS
+Setup a nuget.config file (replace the USERNAME and TOKEN values) A default template is below:
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <clear />
+    <add key="GitHub" value="https://nuget.pkg.github.com/LuminationDev/index.json" />
+  </packageSources>
+
+  <packageSourceCredentials>
+    <GitHub>
+      <add key="Username" value="USERNAME" />
+      <add key="ClearTextPassword" value="TOKEN" />
+    </GitHub>
+  </packageSourceCredentials>
+</configuration>
+
+Add the NuGet source:
+Add the following link as a NuGet package source 
+https://nuget.pkg.github.com/LuminationDev/index.json

@@ -2,9 +2,9 @@
 using System.Reflection;
 using System.Diagnostics;
 
-namespace LeadMeLabsDLL
+namespace LeadMeLabsLibrary
 {
-    static class Version
+    public static class Version
     {
         /// <summary>
         /// Print out the currently running software version to a text file.

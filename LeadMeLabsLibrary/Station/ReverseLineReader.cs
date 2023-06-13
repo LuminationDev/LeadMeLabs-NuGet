@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace LeadMeLabsDLL.Station
+namespace LeadMeLabsLibrary.Station
 {
     /// <summary>
     /// Sourced from Jon Skeet on stackoverflow:

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace LeadMeLabsDLL
+namespace LeadMeLabsLibrary
 {
     /// <summary>
     /// Allow serial and parallel tasks to be queued, where serial tasks will be executed one after the 

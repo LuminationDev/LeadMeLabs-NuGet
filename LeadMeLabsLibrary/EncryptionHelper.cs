@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.Win32;
 
-namespace LeadMeLabsDLL
+namespace LeadMeLabsLibrary
 {
     public static class EncryptionHelper
     {
