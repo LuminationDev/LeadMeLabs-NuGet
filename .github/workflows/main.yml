@@ -23,10 +23,10 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore NuGet packages
-        run: dotnet restore
+        run: nuget restore
 
       - name: Build
-        run: dotnet build --configuration Release
+        run: msbuild /p:Configuration=Release
 
       - name: Pack
         run: dotnet pack --configuration Release --output nupkgs
@@ -34,5 +34,5 @@ jobs:
       - name: Publish to GitHub Packages
         run: dotnet nuget push "nupkgs/*.nupkg" --source "github"
         env:
-          NUGET_ENDPOINT: https://nuget.pkg.github.com/YOUR_GITHUB_USERNAME/index.json
+          NUGET_ENDPOINT: https://nuget.pkg.github.com/LuminationDev/index.json
           NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
