@@ -15,13 +15,16 @@ namespace LeadMeLabsDLL
         /// </returns>
         public static string IsProgramAllowedThroughFirewall()
         {
-            string programPath = GetExecutablePath();
+            string? programPath = GetExecutablePath();
 
-            INetFwPolicy2 firewallPolicy = GetFirewallPolicy();
+            INetFwPolicy2? firewallPolicy = GetFirewallPolicy();
+
+            if(firewallPolicy == null)
+            {
+                return "Unknown";
+            }
 
             NET_FW_ACTION_ action = NET_FW_ACTION_.NET_FW_ACTION_ALLOW;
-
-            Trace.WriteLine(GetExecutablePath());
 
             foreach (INetFwRule rule in firewallPolicy.Rules)
             {
@@ -41,9 +44,10 @@ namespace LeadMeLabsDLL
         /// Retrieves the firewall policy using the HNetCfg.FwPolicy2 COM object.
         /// </summary>
         /// <returns>The INetFwPolicy2 object representing the firewall policy.</returns>
-        private static INetFwPolicy2 GetFirewallPolicy()
+        private static INetFwPolicy2? GetFirewallPolicy()
         {
-            Type type = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
+            Type? type = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
+            if(type == null) return null;
             return Activator.CreateInstance(type) as INetFwPolicy2;
         }
 
@@ -51,9 +55,9 @@ namespace LeadMeLabsDLL
         /// Retrieves the path of the current executable.
         /// </summary>
         /// <returns>The path of the current executable, or null if it cannot be determined.</returns>
-        private static string GetExecutablePath()
+        private static string? GetExecutablePath()
         {
-            string executablePath = null;
+            string? executablePath = null;
 
             try
             {

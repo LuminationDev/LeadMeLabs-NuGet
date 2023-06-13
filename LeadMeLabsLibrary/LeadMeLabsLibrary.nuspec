@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>LeadMeLabsLibrary</id>
+    <version>1.0.0</version>
+    <title>LeadMeLabs Library</title>
+    <authors>ecoad, dkearns</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <description>A shared library of common lab functions.</description>
+    <copyright>2023</copyright>
+  </metadata>
+</package>

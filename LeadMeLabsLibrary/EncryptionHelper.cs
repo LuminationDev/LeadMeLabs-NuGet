@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using Microsoft.Win32;
 
-//https://blog.hildenco.com/2020/07/hosting-nuget-packages-on-github.html <- How to put the NuGet on Github
-
 namespace LeadMeLabsDLL
 {
     public static class EncryptionHelper
