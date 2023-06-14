@@ -37,7 +37,7 @@ jobs:
       - name: Get NuGet package path
         id: get-package-path
         run: |
-          echo "::set-output name=package-path::bin/NuGet/$(Get-ChildItem -Path 'LeadMeLabsLibrary/bin/NuGet' -Filter '*.nupkg' -Name)"
+          echo "::set-output name=package-path::LeadMeLabsLibrary/bin/NuGet/$(Get-ChildItem -Path 'bin/NuGet' -Filter '*.nupkg' -Name)"
 
       - name: Publish to GitHub Packages
         run: dotnet nuget push "${{ steps.get-package-path.outputs.package-path }}" --source "${{ env.NUGET_ENDPOINT }}" --api-key "${{ env.NUGET_API_KEY }}"
