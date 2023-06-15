@@ -15,7 +15,7 @@ namespace LeadMeLabsLibrary
         /// <summary>
         /// Collect just the IP address.
         /// </summary>
-        /// <returns>A string of the local IP Address</returns>
+        /// <returns>An IPAddress object of the local IP Address</returns>
         public static IPAddress? GetIPAddress()
         {
             using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
