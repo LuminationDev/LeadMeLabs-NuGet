@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Management;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
 namespace LeadMeLabsLibrary
@@ -10,25 +11,49 @@ namespace LeadMeLabsLibrary
     public static class SystemInformation
     {
         /// <summary>
-        /// Collect just the IP address.
+        /// Collect just the IPv4 address, filter out any virtual boxes that may be on the system.
         /// </summary>
         /// <returns>An IPAddress object of the local IP Address</returns>
         public static IPAddress? GetIPAddress()
         {
-            using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+            try
             {
-                socket.Connect("8.8.8.8", 65530);
-                IPEndPoint? endPoint = socket.LocalEndPoint as IPEndPoint;
+                IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
+                IPAddress? ipAddress = hostEntry.AddressList.FirstOrDefault(ip =>
+                    ip.AddressFamily == AddressFamily.InterNetwork &&
+                    !IsVirtualBoxInterface(ip));
+                return ipAddress;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Manager class: Server IP Address could not be found", ex);
+            }
+        }
 
-                if (endPoint is not null)
+        /// <summary>
+        /// Scan the network interfaces and check if the supplied IPAddress is connected to a virtual
+        /// box.
+        /// </summary>
+        /// <param name="ipAddress">An IPAddress</param>
+        /// <returns>A boolean representing if the IPAddress is owned by a virtual box</returns>
+        public static bool IsVirtualBoxInterface(IPAddress ipAddress)
+        {
+            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+            foreach (NetworkInterface adapter in interfaces)
+            {
+                IPInterfaceProperties ipProperties = adapter.GetIPProperties();
+                foreach (UnicastIPAddressInformation addrInfo in ipProperties.UnicastAddresses)
                 {
-                    return endPoint.Address;
-                }
-                else
-                {
-                    throw new Exception("Manager class: Server IP Address could not be found");
+                    if (addrInfo.Address.Equals(ipAddress))
+                    {
+                        if (adapter.Description.ToLower().Contains("virtual"))
+                        {
+                            return true;
+                        }
+                    }
                 }
             }
+            return false;
         }
 
         /// <summary>
