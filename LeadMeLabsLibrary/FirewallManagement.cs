@@ -28,9 +28,18 @@ namespace LeadMeLabsLibrary
         /// </returns>
         public static string IsProgramAllowedThroughFirewall()
         {
-            string? programPath = GetExecutablePath();
-
-            INetFwPolicy2? firewallPolicy = GetFirewallPolicy();
+            return IsProgramAllowedThroughFirewall(GetExecutablePath());
+        }
+        
+        /// <summary>
+        /// Checks if the program at the current executable path is allowed through the firewall.
+        /// </summary>
+        /// <returns>
+        /// Returns "Allowed" if the program is allowed through the firewall,
+        /// otherwise returns "Not allowed".
+        /// </returns>
+        public static string IsProgramAllowedThroughFirewall(string executablePath)
+        { INetFwPolicy2? firewallPolicy = GetFirewallPolicy();
 
             if(firewallPolicy == null)
             {
@@ -43,7 +52,7 @@ namespace LeadMeLabsLibrary
             {
                 if (rule.ApplicationName != null)
                 {
-                    if (rule.Action == action && rule.ApplicationName.Equals(programPath, StringComparison.OrdinalIgnoreCase))
+                    if (rule.Action == action && rule.ApplicationName.Equals(executablePath, StringComparison.OrdinalIgnoreCase))
                     {
                         return "Allowed";
                     }
