@@ -39,7 +39,8 @@ namespace LeadMeLabsLibrary
         /// otherwise returns "Not allowed".
         /// </returns>
         public static string IsProgramAllowedThroughFirewall(string executablePath)
-        { INetFwPolicy2? firewallPolicy = GetFirewallPolicy();
+        { 
+            INetFwPolicy2? firewallPolicy = GetFirewallPolicy();
 
             if(firewallPolicy == null)
             {
@@ -48,18 +49,36 @@ namespace LeadMeLabsLibrary
 
             NET_FW_ACTION_ action = NET_FW_ACTION_.NET_FW_ACTION_ALLOW;
 
+            string trimmedPath = "";
+            if (executablePath.StartsWith("C:\\Users"))
+            {
+                executablePath = executablePath.Substring(9, executablePath.Length - 9);
+                int position = executablePath.IndexOf("\\");
+                executablePath = executablePath.Substring(position, executablePath.Length - position);
+            }
+
+            bool foundInboundAllow = false;
+            
             foreach (INetFwRule rule in firewallPolicy.Rules)
             {
                 if (rule.ApplicationName != null)
                 {
-                    if (rule.Action == action && rule.ApplicationName.Equals(executablePath, StringComparison.OrdinalIgnoreCase))
+                    
+                    if (rule.Action == NET_FW_ACTION_.NET_FW_ACTION_BLOCK && 
+                        rule.ApplicationName.Contains(executablePath, StringComparison.OrdinalIgnoreCase))
                     {
-                        return "Allowed";
+                        return "Not allowed";
+                    }
+                    if (rule.Action == NET_FW_ACTION_.NET_FW_ACTION_ALLOW && 
+                        rule.Direction == NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN && 
+                        rule.ApplicationName.Contains(executablePath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        foundInboundAllow = true;
                     }
                 }
             }
 
-            return "Not allowed";
+            return foundInboundAllow ? "Allowed" : "Not allowed";
         }
 
         /// <summary>
