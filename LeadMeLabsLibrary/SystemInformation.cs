@@ -60,7 +60,7 @@ namespace LeadMeLabsLibrary
         /// Retrieve the MAC address of the current machine.
         /// </summary>
         /// <returns>A string of the mac address</returns>
-        public static string? GetMACAddress()
+        public static string GetMACAddress()
         {
             ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_NetworkAdapterConfiguration WHERE IPEnabled = true AND NOT Description LIKE '%VirtualBox%'");
             IEnumerable<ManagementObject> objects = searcher.Get().Cast<ManagementObject>();
