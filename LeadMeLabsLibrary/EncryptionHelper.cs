@@ -84,7 +84,7 @@ namespace LeadMeLabsLibrary
         /// <param name="data">A string of data to encrypt and save to a file.</param>
         /// <param name="fileName">A string of the file (path) to check.</param>
         /// <returns></returns>
-        private static bool EncryptFile(string data, string fileName)
+        public static bool EncryptFile(string data, string fileName)
         {
             string encryptedData = UnicodeEncryptNode(data);
             string encryptedBackupData = UnicodeEncryptNode(data, true);
