@@ -3,6 +3,7 @@ using System.Text;
 using System.Security.Cryptography;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
@@ -10,8 +11,9 @@ namespace LeadMeLabsLibrary
 {
     public static class EncryptionHelper
     {
-        private static readonly string OldEncryptionKey = CollectOldSecret();
         private static readonly string EncryptionKey = CollectSecret();
+        private static readonly string BackupEncryptionKey = CollectBackupSecret();
+        private static readonly string OldEncryptionKey = CollectOldSecret();
 
         // This constant is used to determine the KeySize of the encryption algorithm in bits.
         // We divide this by 8 within the code below to get the equivalent number of bytes.
@@ -30,23 +32,94 @@ namespace LeadMeLabsLibrary
         /// <returns></returns>
         public static string DetectFileEncryption(string fileName)
         {
+            string backupFile = GetBackupFileName(fileName);
+            
             try
             {
                 string text = File.ReadAllText(fileName, Encoding.Unicode);
                 string decryptedText = UnicodeDecryptNode(text);
+                
+                //If a backup file does not exist, create one.
+                if (!File.Exists(backupFile))
+                {
+                    EncryptFile(decryptedText, fileName);
+                }
+
                 return decryptedText;
             }
             catch (Exception)
             {
+                //Check if there is a backup available first and try to read that
+                try
+                {
+                    if (File.Exists(backupFile))
+                    {
+                        string backupText = File.ReadAllText(backupFile, Encoding.Unicode);
+                        string backupDecryptedText = UnicodeDecryptNode(backupText, true);
+
+                        //Re-write the original file
+                        EncryptFile(backupDecryptedText, fileName);
+                        return backupDecryptedText;
+                    }
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+
                 string text = File.ReadAllText(fileName, Encoding.UTF8);
                 string decryptedText = Utf8DecryptNode(text);
 
                 //Encrypt as Unicode
                 string encryptedText = UnicodeEncryptNode(decryptedText);
-                File.WriteAllText(fileName, encryptedText, Encoding.Unicode); //Attempt to overwrite the old UTF-8 file
+                EncryptFile(encryptedText, fileName); //Attempt to overwrite the old UTF-8 file and create a backup
                 string decryptedNodeText = UnicodeDecryptNode(encryptedText);
                 return decryptedNodeText;
             }
+        }
+
+        /// <summary>
+        /// Encrypt the supplied data and save it to a file, create or update the backup file at the same time.
+        /// </summary>
+        /// <param name="data">A string of data to encrypt and save to a file.</param>
+        /// <param name="fileName">A string of the file (path) to check.</param>
+        /// <returns></returns>
+        private static bool EncryptFile(string data, string fileName)
+        {
+            string encryptedData = UnicodeEncryptNode(data);
+            string encryptedBackupData = UnicodeEncryptNode(data, true);
+
+            try
+            {
+                //Write the master file
+                File.WriteAllText(fileName, encryptedData, Encoding.Unicode);
+                
+                //Write the backup file
+                string backupFile = GetBackupFileName(fileName);
+                File.WriteAllText(backupFile, encryptedBackupData, Encoding.Unicode);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Given a file path, add _backup before the extension and return the new path.
+        /// </summary>
+        /// <param name="filePath">A string of the file path to alter.</param>
+        /// <returns></returns>
+        private static string GetBackupFileName(string filePath)
+        {
+            // Parse the file path to get its components
+            string directory = Path.GetDirectoryName(filePath);
+            string fileName = Path.GetFileNameWithoutExtension(filePath);
+            string extension = Path.GetExtension(filePath);
+
+            // Add "_backup" to the base name
+            string backupFileName = Path.Combine(directory, $"{fileName}_backup{extension}");
+            return backupFileName;
         }
         #endregion
 
@@ -284,9 +357,9 @@ namespace LeadMeLabsLibrary
             return sanitizedInput;
         }
 
-        public static string UnicodeEncryptNode(string data)
+        public static string UnicodeEncryptNode(string data, bool backup = false)
         {
-            byte[] key = Encoding.UTF8.GetBytes(EncryptionKey);
+            byte[] key = Encoding.UTF8.GetBytes(backup ? BackupEncryptionKey : EncryptionKey);
             string ivHex = GenerateRandomIv(); // Get IV as a hexadecimal string
 
             byte[] dataBytes = Encoding.Unicode.GetBytes(data); // Use Encoding.Unicode for UTF-16
@@ -312,9 +385,9 @@ namespace LeadMeLabsLibrary
             return encryptedData;
         }
 
-        public static string UnicodeDecryptNode(string encryptedData)
+        public static string UnicodeDecryptNode(string encryptedData, bool backup = false)
         {
-            byte[] key = Encoding.UTF8.GetBytes(EncryptionKey);
+            byte[] key = Encoding.UTF8.GetBytes(backup ? BackupEncryptionKey : EncryptionKey);
             byte[] iv = HexStringToByteArray(encryptedData.Substring(0, 32));
 
             string encrypted = encryptedData.Substring(32);
@@ -394,6 +467,67 @@ namespace LeadMeLabsLibrary
                 return Array.Empty<byte>();
             }
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private static string CollectSecret()
+        {
+            string? key = SystemInformation.GetMACAddress();
+            if (key == null)
+            {
+                return "";
+            }
+            
+            key = key.Replace("-", "");
+
+            string paddedKey = key;
+
+            while (paddedKey.Length < 32)
+            {
+                paddedKey += "0";
+            }
+
+            paddedKey = paddedKey.ToLower();
+            return paddedKey;
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private static string CollectBackupSecret()
+        {
+            string? key = GetProcessorId();
+            if (key == null)
+            {
+                return "";
+            }
+            
+            key = key.Replace("-", "");
+
+            string paddedKey = key;
+
+            while (paddedKey.Length < 32)
+            {
+                paddedKey += "0";
+            }
+
+            paddedKey = paddedKey.ToLower();
+            return paddedKey;
+        }
+        
+        static string? GetProcessorId()
+        {
+            using ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT ProcessorId FROM Win32_Processor");
+            foreach (ManagementObject obj in searcher.Get())
+            {
+                return obj["ProcessorId"].ToString();
+            }
+
+            return null;
+        }
 
         /// <summary>
         /// This key is used for decrypting the nodejs encryption only. The key is based off the unique product ID of the individual
@@ -422,26 +556,7 @@ namespace LeadMeLabsLibrary
             return paddedKey;
         }
         
-        private static string CollectSecret()
-        {
-            string? key = SystemInformation.GetMACAddress();
-            if (key == null)
-            {
-                return "";
-            }
-            
-            key = key.Replace("-", "");
-
-            string paddedKey = key;
-
-            while (paddedKey.Length < 32)
-            {
-                paddedKey += "0";
-            }
-
-            paddedKey = paddedKey.ToLower();
-            return paddedKey;
-        }
+        
         #endregion
     }
 }
