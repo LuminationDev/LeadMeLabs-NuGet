@@ -70,11 +70,9 @@ namespace LeadMeLabsLibrary
                 string text = File.ReadAllText(fileName, Encoding.UTF8);
                 string decryptedText = Utf8DecryptNode(text);
 
-                //Encrypt as Unicode
-                string encryptedText = UnicodeEncryptNode(decryptedText);
-                EncryptFile(encryptedText, fileName); //Attempt to overwrite the old UTF-8 file and create a backup
-                string decryptedNodeText = UnicodeDecryptNode(encryptedText);
-                return decryptedNodeText;
+                //Attempt to overwrite the old UTF-8 file with the new unicode and create a backup
+                EncryptFile(decryptedText, fileName); 
+                return decryptedText;
             }
         }
 
