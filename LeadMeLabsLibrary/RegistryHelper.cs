@@ -20,15 +20,15 @@ public static class RegistryHelper
     public static Tuple<bool, string> ValidateElectronInstallDirectory(string softwareType)
     {
         // Check for the old task before the new one
-        Tuple<bool, string> success = CheckForOldTask(softwareType);
+        Tuple<bool, string> result = CheckForOldTask(softwareType);
 
         // If the old task is not there or disabled check for the new task
-        if (!success.Item1)
+        if (!result.Item1)
         {
-            success = CheckForNewTask();
+            result = CheckForNewTask();
         }
 
-        return success;
+        return result;
     }
     
     /// <summary>
