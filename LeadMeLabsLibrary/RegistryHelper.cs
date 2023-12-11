@@ -72,10 +72,10 @@ public static class RegistryHelper
     private static Tuple<bool, string> CheckForTask(string taskPath)
     {
         string? actionPath = SearchTaskScheduler(taskPath);
-        if (actionPath == null) return Tuple.Create(false, "Error: Could not find task's action path.");
+        if (actionPath == null) return Tuple.Create(false, $"Error: Task is disabled or could not find task's action path. {taskPath}");
 
         actionPath = CollectBatchParent(actionPath);
-        if (actionPath == null) return Tuple.Create(false, "Error: Could not find _batch parent folder.");
+        if (actionPath == null) return Tuple.Create(false, $"Error: Could not find _batch parent folder. {actionPath}");
 
         return SearchRegistryKey(actionPath);
     }
