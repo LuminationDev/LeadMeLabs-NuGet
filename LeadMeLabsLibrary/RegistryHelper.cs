@@ -202,12 +202,9 @@ public static class RegistryHelper
                     // Check if the ShortcutName value matches the target value
                     if (shortcutNameValue != null && string.Equals(shortcutNameValue.ToString(), targetShortcutName, StringComparison.OrdinalIgnoreCase))
                     {
-                        Console.WriteLine($"Found matching entry in registry: {registryPath}\\{subKeyName}\\ShortcutName = {shortcutNameValue}");
-
                         if (installLocationValue != null && string.Equals(installLocationValue.ToString(),
                                 launcherInstallPath, StringComparison.OrdinalIgnoreCase))
                         {
-                            Console.WriteLine("Install location already correct.");
                             return Tuple.Create(true, "Install location already correct.");
                         }
                         
@@ -218,8 +215,6 @@ public static class RegistryHelper
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine(e);
-                            
                             return Tuple.Create(false, $"Error: Could not update value: {e}");
                         }
 
