@@ -89,11 +89,10 @@ public static class RegistryHelper
     /// </returns>
     private static string? CollectBatchParent(string path)
     {
-        string filePath = path;
         string targetDirectoryName = "_batch";
 
         // Get the directory path
-        string? directoryPath = Path.GetDirectoryName(filePath);
+        string? directoryPath = Path.GetDirectoryName(path);
 
         if (directoryPath == null) return null;
 
@@ -104,6 +103,11 @@ public static class RegistryHelper
         
         // Extract the parent directory path
         string parentDirectoryPath = directoryPath.Substring(0, index - 1);
+
+        // Check that the parent directory exists and that the LeadMe.exe exists within it.
+        if (!Directory.Exists(parentDirectoryPath)) return null;
+        if (!File.Exists(Path.Join(parentDirectoryPath, "LeadMe.exe"))) return null;
+        
         return parentDirectoryPath;
     }
     
