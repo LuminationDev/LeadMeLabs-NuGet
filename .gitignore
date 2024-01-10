@@ -134,3 +134,7 @@ _NCrunch*
 
 # Do not upload log files or filled out config.env
 nuget.config
+.idea/.idea.LeadMeLabsLibrary/.idea/.name
+.idea/.idea.LeadMeLabsLibrary/.idea/encodings.xml
+.idea/.idea.LeadMeLabsLibrary/.idea/indexLayout.xml
+.idea/.idea.LeadMeLabsLibrary/.idea/vcs.xml
