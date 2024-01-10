@@ -8,7 +8,7 @@
     <Company>Lumination</Company>
     <Authors>ecoad, dkearns</Authors>
     <Copyright>2023</Copyright>
-	<Version>1.0.15</Version>
+	<Version>1.0.16</Version>
     <Description>A shared library of common functions for the Station &amp; NUC software.</Description>
   </PropertyGroup>
 
