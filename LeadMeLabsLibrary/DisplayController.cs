@@ -116,7 +116,8 @@ public static class DisplayController
         DEVMODE mode = new DEVMODE();
         mode.dmSize = (ushort)Marshal.SizeOf(mode);
 
-        if (EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref mode))
+        int modeIndex = 0;
+        while (EnumDisplaySettings(null, modeIndex, ref mode))
         {
             Console.WriteLine("Current Mode:\n\t" +
                               "{0} by {1}, {2} bit, {3} degrees, {4} hertz",
@@ -128,6 +129,8 @@ public static class DisplayController
             {
                 return true;
             }
+
+            modeIndex++;
         }
 
         return false;
