@@ -45,8 +45,10 @@ namespace LeadMeLabsLibrary
                 messages.Add("Password cannot start with S\\N");
             }
 
-            if (password.ToLower().Contains((Environment.GetEnvironmentVariable("LabLocation", EnvironmentVariableTarget.Process) ?? "Unknown")
-                    .Substring(0, 4).ToLower()))
+            string labLocation =
+                Environment.GetEnvironmentVariable("LabLocation", EnvironmentVariableTarget.Process) ?? "Unknown";
+            if (password.ToLower().Contains(labLocation
+                    .Substring(0, labLocation.Length > 4 ? 4 : labLocation.Length).ToLower()))
             {
                 messages.Add("Password cannot contain the first 4 letters of the lab location");
             }
