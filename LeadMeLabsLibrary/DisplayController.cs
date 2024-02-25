@@ -151,6 +151,15 @@ public static class DisplayController
                 mode.dmDisplayFrequency);
         }
     }
+    
+    const int DM_BITSPERPEL = 0x40000;
+    const int DM_DISPLAYFLAGS = 0x200000;
+    const int DM_DISPLAYFREQUENCY = 0x400000;
+    const int DM_PELSHEIGHT = 0x100000;
+    const int DM_PELSWIDTH = 0x80000;
+    const int DM_POSITION = 0x20;
+    const int DM_DISPLAYORIENTATION = 0x80;
+    const int DM_DISPLAYFIXEDOUTPUT = 0x20000000;
 
     public static bool ChangeDisplaySettings(int width, int height, int bitCount)
     {
@@ -167,6 +176,14 @@ public static class DisplayController
         newMode.dmPelsWidth = (uint)width;
         newMode.dmPelsHeight = (uint)height;
         newMode.dmBitsPerPel = (uint)bitCount;
+        if ((width / height) > (16 / 9))
+        {
+            newMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY | DM_BITSPERPEL | DM_DISPLAYFLAGS | DM_DISPLAYORIENTATION | DM_DISPLAYFIXEDOUTPUT;
+        }
+        else
+        {
+            newMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY | DM_BITSPERPEL | DM_DISPLAYFLAGS | DM_DISPLAYORIENTATION;
+        }
 
         // Capturing the operation result
         int result = ChangeDisplaySettings(ref newMode, 0);
