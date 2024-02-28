@@ -197,7 +197,7 @@ public static class RegistryHelper
                     object? shortcutNameValue = subKey.GetValue("ShortcutName");
                     
                     // Check the current value of the install location
-                    object? installLocationValue = subKey.GetValue("ShortcutName");
+                    object? installLocationValue = subKey.GetValue("InstallLocation");
 
                     // Check if the ShortcutName value matches the target value
                     if (shortcutNameValue != null && string.Equals(shortcutNameValue.ToString(), targetShortcutName, StringComparison.OrdinalIgnoreCase))
