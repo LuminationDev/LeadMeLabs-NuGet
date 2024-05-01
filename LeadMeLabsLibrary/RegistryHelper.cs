@@ -233,4 +233,59 @@ public static class RegistryHelper
             return Tuple.Create(false, $"An error occurred: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// This method searches for a specified registry value under the SOFTWARE key in the CurrentUser registry hive.
+    /// It looks for a sub-key with a specific "ShortcutName" value and returns the corresponding "InstallLocation" value.
+    /// </summary>
+    /// <param name="targetShortcutName">A string of the shortcut name of the program to be searched for.</param>
+    /// <returns>A string of the install location</returns>
+    public static string? GetProgramInstallationPath(string targetShortcutName)
+    {
+         // Specify the base registry key (LocalMachine in this case)
+        RegistryKey baseKey = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64);
+        
+        // Specify the path to the registry key you want to search
+        string registryPath = @"SOFTWARE";
+        
+        try
+        {
+            // Open the registry key under SOFTWARE
+            using RegistryKey? key = baseKey.OpenSubKey(registryPath, true);
+            
+            if (key != null)
+            {
+                // Get the names of all sub keys (entries) under the SOFTWARE key
+                string[] subKeyNames = key.GetSubKeyNames();
+
+                // Iterate through each sub key and check for the specified ShortcutName
+                foreach (string subKeyName in subKeyNames)
+                {
+                    using RegistryKey? subKey = key.OpenSubKey(subKeyName, true);
+
+                    if (subKey == null) continue;
+                    
+                    // Check if the sub key contains the specified ShortcutName
+                    object? shortcutNameValue = subKey.GetValue("ShortcutName");
+                    
+                    // Check the current value of the install location
+                    object? installLocationValue = subKey.GetValue("InstallLocation");
+
+                    // Check if the ShortcutName value matches the target value
+                    if (shortcutNameValue != null && string.Equals(shortcutNameValue.ToString(), targetShortcutName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return installLocationValue?.ToString();
+                    }
+                }
+
+                return null;
+            }
+
+            return null;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
 }
