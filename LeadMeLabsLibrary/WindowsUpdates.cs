@@ -24,11 +24,10 @@ public static class WindowsUpdates
         _logCallback = callback;
         
         bool success = PerformUpdate();
-        if (success)
-        {
-            TriggerLogCallback("Updates complete, restarting computer", Enums.LogLevel.Info);
-            //RestartComputer();
-        }
+        if (!success) return;
+        
+        TriggerLogCallback("Updates complete, restarting computer", Enums.LogLevel.Update);
+        RestartComputer();
     }
     
     /// <summary>
@@ -51,7 +50,7 @@ public static class WindowsUpdates
         //Check if the program has Admin rights otherwise bail out early
         if (!IsAdmin())
         {
-            TriggerLogCallback("Station is not running with admin privileges", Enums.LogLevel.Info);
+            TriggerLogCallback("Station is not running with admin privileges", Enums.LogLevel.Update);
             return false;
         }
         
@@ -59,19 +58,19 @@ public static class WindowsUpdates
         //Check if the module is installed
         if (!CheckForPowershellModule())
         {
-            TriggerLogCallback("PSWindowsUpdate module is not installed", Enums.LogLevel.Info);
+            TriggerLogCallback("PSWindowsUpdate module is not installed", Enums.LogLevel.Update);
             
             //Allow the PSGallery as a trusted powershell repository
             if (!AddPsGalleryRepository()) return false;
-            TriggerLogCallback("PSGallery added trusted repositories", Enums.LogLevel.Info);
+            TriggerLogCallback("PSGallery added trusted repositories", Enums.LogLevel.Update);
             
             //Attempt to install the module if it is not installed
             if (!InstallPowershellModule()) return false;
-            TriggerLogCallback("PSWindowsUpdate powershell module installed successfully", Enums.LogLevel.Info);
+            TriggerLogCallback("PSWindowsUpdate powershell module installed successfully", Enums.LogLevel.Update);
         }
 
         //Check if there are any Windows updates available
-        TriggerLogCallback("Checking for Windows updates...", Enums.LogLevel.Info);
+        TriggerLogCallback("Checking for Windows updates...", Enums.LogLevel.Update);
         
         return CheckForWindowsUpdates();
     }
@@ -105,7 +104,7 @@ public static class WindowsUpdates
     /// <returns>A bool of if the command was successful.</returns>
     private static bool AddPsGalleryRepository()
     {
-        TriggerLogCallback("Adding PSGallery to trusted repositories", Enums.LogLevel.Info);
+        TriggerLogCallback("Adding PSGallery to trusted repositories", Enums.LogLevel.Update);
         string success = ExecutePowerShellCommand($"Set-PSRepository -Name {PsGalleryRepo} -InstallationPolicy Trusted -Verbose");
         return success is not "failed";
     }
@@ -116,7 +115,7 @@ public static class WindowsUpdates
     /// <returns>A bool of if the command was successful.</returns>
     private static bool InstallPowershellModule()
     {
-        TriggerLogCallback("Attempting to install PSWindowsUpdate powershell module", Enums.LogLevel.Info);
+        TriggerLogCallback("Attempting to install PSWindowsUpdate powershell module", Enums.LogLevel.Update);
         string command = $"Install-Module -Name {ModuleName} -RequiredVersion {ModuleVersion} -Force -Verbose";
         string success = ExecutePowerShellCommand(command);
         return success is not "failed";
@@ -156,7 +155,7 @@ public static class WindowsUpdates
     /// <returns></returns>
     private static bool PerformAllWindowsUpdates()
     {
-        TriggerLogCallback("Attempting to perform all Windows updates", Enums.LogLevel.Info);
+        TriggerLogCallback("Attempting to perform all Windows updates", Enums.LogLevel.Update);
         string command = $"Install-WindowsUpdate -AcceptAll";
         string success = ExecutePowerShellCommand(command);
         return success is not "failed";
@@ -217,7 +216,7 @@ public static class WindowsUpdates
             }
                 
             // Output the command execution result
-            TriggerLogCallback(e.Data, Enums.LogLevel.Info);
+            TriggerLogCallback(e.Data, Enums.LogLevel.Update);
         };
         process.BeginOutputReadLine();
         
