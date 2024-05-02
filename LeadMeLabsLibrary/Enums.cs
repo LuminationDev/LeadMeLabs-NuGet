@@ -13,6 +13,7 @@ public static class Enums
         Info,
         Normal,
         Debug,
-        Verbose
+        Verbose,
+        Update
     }
 }
