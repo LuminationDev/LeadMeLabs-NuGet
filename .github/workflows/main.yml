@@ -3,7 +3,7 @@ name: Build and Publish
 on:
   push:
     branches:
-      - main
+      - tests-ci
 
 env:
   DOTNET_VERSION: 6.0.100
@@ -41,9 +41,3 @@ jobs:
         id: get-package-path
         run: |
           echo "::set-output name=package-path::LeadMeLabsLibrary/bin/NuGet/$(Get-ChildItem -Path 'LeadMeLabsLibrary/bin/NuGet' -Filter '*.nupkg' -Name)"
-
-      - name: Publish to GitHub Packages
-        run: dotnet nuget push "${{ steps.get-package-path.outputs.package-path }}" --source "${{ env.NUGET_ENDPOINT }}" --api-key "${{ env.NUGET_API_KEY }}"
-        env:
-          NUGET_ENDPOINT: https://nuget.pkg.github.com/LuminationDev/index.json
-          NUGET_API_KEY: ${{ secrets.NUGET_TOKEN }}
