@@ -26,10 +26,10 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1
 
       - name: Restore NuGet packages
-        run: cd LeadMeLabsLibrary && nuget restore
+        run: nuget restore
         
       - name: Test
-        run: cd Tests && nuget restore && dotnet test
+        run: cd Tests && dotnet test
 
       - name: Build
         run: cd LeadMeLabsLibrary && msbuild /p:Configuration=Release
