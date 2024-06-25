@@ -250,6 +250,41 @@ namespace LeadMeLabsLibrary
             cryptoStream.Close();
             return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount);
         }
+        
+        /// <summary>
+        /// Encrypt data that can be read by the nodejs launcher program.
+        /// </summary>
+        /// <param name="data">A string of data that is to be encrypted.</param>
+        /// <returns>An encrypted string that can be written to a file.</returns>
+        public static string Utf8EncryptNode(string data)
+        {
+            byte[] key = Encoding.UTF8.GetBytes(OldEncryptionKey);
+            byte[] iv = Generate128BitsOfRandomEntropy(); // generate a random initialization vector
+
+            byte[] dataBytes = Encoding.UTF8.GetBytes(data);
+            byte[] encryptedBytes;
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = key;
+                aes.IV = iv;
+
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                    {
+                        cs.Write(dataBytes, 0, dataBytes.Length);
+                        cs.FlushFinalBlock();
+                        encryptedBytes = ms.ToArray();
+                    }
+                }
+            }
+
+            string encryptedData = BitConverter.ToString(iv).Replace("-", "") + BitConverter.ToString(encryptedBytes).Replace("-", "");
+            return encryptedData;
+        }
 
         /// <summary>
         /// Decrypt the data when encrypted through the nodejs launcher program.
@@ -460,7 +495,7 @@ namespace LeadMeLabsLibrary
 
                 return bytes;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return Array.Empty<byte>();
             }
