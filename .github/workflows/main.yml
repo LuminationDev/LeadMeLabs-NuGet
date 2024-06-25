@@ -29,7 +29,7 @@ jobs:
         run: cd LeadMeLabsLibrary && nuget restore
         
       - name: Test
-        uses: cd Tests && nuget restore && dotnet test
+        run: cd Tests && nuget restore && dotnet test
 
       - name: Build
         run: cd LeadMeLabsLibrary && msbuild /p:Configuration=Release
