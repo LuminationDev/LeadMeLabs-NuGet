@@ -1,7 +1,7 @@
-﻿using NetFwTypeLib;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Security.Principal;
+using FirewallAPI2;
 
 namespace LeadMeLabsLibrary
 {

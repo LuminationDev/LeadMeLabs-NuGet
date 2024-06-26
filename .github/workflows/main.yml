@@ -26,10 +26,10 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1
 
       - name: Restore NuGet packages
-        run: cd LeadMeLabsLibrary && nuget restore
+        run: nuget restore
         
       - name: Test
-        uses: cd Tests && nuget restore && dotnet test
+        run: cd Tests && dotnet test
 
       - name: Build
         run: cd LeadMeLabsLibrary && msbuild /p:Configuration=Release
@@ -41,7 +41,7 @@ jobs:
         id: get-package-path
         run: |
           echo "::set-output name=package-path::LeadMeLabsLibrary/bin/NuGet/$(Get-ChildItem -Path 'LeadMeLabsLibrary/bin/NuGet' -Filter '*.nupkg' -Name)"
-
+          
       - name: Publish to GitHub Packages
         run: dotnet nuget push "${{ steps.get-package-path.outputs.package-path }}" --source "${{ env.NUGET_ENDPOINT }}" --api-key "${{ env.NUGET_API_KEY }}"
         env:
