@@ -26,13 +26,16 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1
 
       - name: Restore NuGet packages
-        run: nuget restore
+        run: cd LeadMeLabsLibrary && nuget restore
+        
+      - name: Test
+        uses: cd Tests && nuget restore && dotnet test
 
       - name: Build
-        run: msbuild /p:Configuration=Release
+        run: cd LeadMeLabsLibrary && msbuild /p:Configuration=Release
 
       - name: Pack
-        run: msbuild /t:Pack /p:Configuration=Release /p:PackageOutputPath=bin/NuGet
+        run: cd LeadMeLabsLibrary && msbuild /t:Pack /p:Configuration=Release /p:PackageOutputPath=bin/NuGet
         
       - name: Get NuGet package path
         id: get-package-path
