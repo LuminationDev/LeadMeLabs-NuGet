@@ -15,7 +15,6 @@
   <ItemGroup>
     <PackageReference Include="System.Management" Version="7.0.2" />
     <PackageReference Include="TaskScheduler" Version="2.10.1" />
-    <PackageReference Include="xunit.extensibility.core" Version="2.5.3" />
   </ItemGroup>
 
   <ItemGroup>
