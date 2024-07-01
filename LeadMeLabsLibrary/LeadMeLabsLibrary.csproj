@@ -25,9 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.1" />
     <PackageReference Include="System.Management" Version="7.0.2" />
-    <PackageReference Include="xunit" Version="2.5.1-pre.20" />
     <PackageReference Include="TaskScheduler" Version="2.10.1" />
   </ItemGroup>
 
