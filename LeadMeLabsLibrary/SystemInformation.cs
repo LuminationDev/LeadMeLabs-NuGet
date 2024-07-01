@@ -67,5 +67,15 @@ namespace LeadMeLabsLibrary
             string mac = (from o in objects orderby o["IPConnectionMetric"] select o["MACAddress"].ToString()).FirstOrDefault()?.Replace(":", "-") ?? "Unknown";
             return mac;
         }
+        
+        /// <summary>
+        /// Gets the computers ARP table
+        /// </summary>
+        /// <returns>A string of the ARP table</returns>
+        public static string[]? GenerateARPTable()
+        {
+            var result = CommandLine.RunCMDWithOutput("arp -a");
+            return result.Split("\n");
+        }
     }
 }
