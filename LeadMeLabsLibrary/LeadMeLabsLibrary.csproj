@@ -8,7 +8,7 @@
     <Company>Lumination</Company>
     <Authors>ecoad, dkearns</Authors>
     <Copyright>2023</Copyright>
-	<Version>1.0.6</Version>
+	<Version>1.0.22</Version>
     <Description>A shared library of common functions for the Station &amp; NUC software.</Description>
   </PropertyGroup>
 
@@ -28,6 +28,8 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.1" />
     <PackageReference Include="System.Management" Version="7.0.2" />
     <PackageReference Include="xunit" Version="2.5.1-pre.20" />
+    <PackageReference Include="TaskScheduler" Version="2.10.1" />
   </ItemGroup>
+
 
 </Project>
