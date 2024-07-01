@@ -63,7 +63,7 @@ public class HelpersTests
         
         // Test DateShortYear
         List<string> resultDateShortYear = Helpers.GetPasswordValidityMessages("ABC45FGHIJKLmno" + DateTime.Now.ToString("ddMMyy"));
-        Assert.Collection(resultDateShortYear, e => Assert.Equal(PasswordMessages.DateShortYear, e));
+        Assert.True(resultDateShortYear.Contains(PasswordMessages.DateShortYear));
         
         // Test Acronym
         Environment.SetEnvironmentVariable("LabLocation", "MyComputer", EnvironmentVariableTarget.Process);

@@ -13,21 +13,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <COMReference Include="NetFwTypeLib">
-      <WrapperTool>tlbimp</WrapperTool>
-      <VersionMinor>0</VersionMinor>
-      <VersionMajor>1</VersionMajor>
-      <Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
-      <Lcid>0</Lcid>
-      <Isolated>false</Isolated>
-      <EmbedInteropTypes>true</EmbedInteropTypes>
-    </COMReference>
+    <PackageReference Include="System.Management" Version="7.0.2" />
+    <PackageReference Include="TaskScheduler" Version="2.10.1" />
+    <PackageReference Include="xunit.extensibility.core" Version="2.5.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Management" Version="7.0.2" />
-    <PackageReference Include="TaskScheduler" Version="2.10.1" />
+    <Reference Include="FirewallAPI2">
+      <HintPath>.\FirewallAPI2.dll</HintPath>
+    </Reference>
   </ItemGroup>
-
 
 </Project>
