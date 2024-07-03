@@ -8,7 +8,7 @@
     <Company>Lumination</Company>
     <Authors>ecoad, dkearns</Authors>
     <Copyright>2023</Copyright>
-	<Version>1.0.22</Version>
+	<Version>1.0.24</Version>
     <Description>A shared library of common functions for the Station &amp; NUC software.</Description>
   </PropertyGroup>
 
@@ -19,6 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="FirewallAPI2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <PackagePath>lib\$(TargetFramework)</PackagePath>
+    </Content>
     <Reference Include="FirewallAPI2">
       <HintPath>.\FirewallAPI2.dll</HintPath>
     </Reference>
