@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Company>Lumination</Company>
+    <Authors>ecoad, dkearns</Authors>
+    <Copyright>2023</Copyright>
+	  <Version>1.0.31</Version>
+    <Description>A shared library of common functions for the Station &amp; NUC software.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Management" Version="7.0.2" />
+    <PackageReference Include="TaskScheduler" Version="2.10.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="FirewallAPI2">
+      <HintPath>FirewallAPI2.dll</HintPath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="FirewallAPI2.dll">
+      <Pack>true</Pack>
+      <PackagePath>lib\net6.0-windows7.0\</PackagePath>
+    </None>
+  </ItemGroup>
+
+
+</Project>

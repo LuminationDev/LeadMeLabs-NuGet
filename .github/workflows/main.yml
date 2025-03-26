@@ -1,0 +1,49 @@
+name: Build and Publish
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  DOTNET_VERSION: 6.0.100
+  NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Restore NuGet packages
+        run: nuget restore
+        
+      - name: Test
+        run: cd Tests && dotnet test
+
+      - name: Build
+        run: cd LeadMeLabsLibrary && msbuild /p:Configuration=Release
+
+      - name: Pack
+        run: cd LeadMeLabsLibrary && msbuild /t:Pack /p:Configuration=Release /p:PackageOutputPath=bin/NuGet
+        
+      - name: Get NuGet package path
+        id: get-package-path
+        run: |
+          echo "::set-output name=package-path::LeadMeLabsLibrary/bin/NuGet/$(Get-ChildItem -Path 'LeadMeLabsLibrary/bin/NuGet' -Filter '*.nupkg' -Name)"
+
+      - name: Publish to GitHub Packages
+        run: dotnet nuget push "${{ steps.get-package-path.outputs.package-path }}" --source "${{ env.NUGET_ENDPOINT }}" --api-key "${{ env.NUGET_API_KEY }}"
+        env:
+          NUGET_ENDPOINT: https://nuget.pkg.github.com/LuminationDev/index.json
+          NUGET_API_KEY: ${{ secrets.NUGET_TOKEN }}
